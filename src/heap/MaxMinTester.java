@@ -1,5 +1,6 @@
 package heap;
 import java.util.ArrayList;
+import java.io.*; 
 
 /**
  * Write a description of class MaxMinTester here.
@@ -9,14 +10,11 @@ import java.util.ArrayList;
  */
 public class MaxMinTester {
     public static void main(String[] args) {
-        int size = 50;
-        ArrayList<Integer> inputArray = new ArrayList();
-        for (int i = 0; i < size; i++)
-            inputArray.add(i, i * 2);
+    	
+    	
+    	ArrayList<Integer> inputArray = automateInputArray(50,"dupInd");
+	       
         MaxMinHeap heap1 = new MaxMinHeap(inputArray);
-        for (int i = 0; i < size; i++)
-            inputArray.set(i, (i + 1) * 2);
-        // MaxMinHeap heap2 = new MaxMinHeap(inputArray);
         // heap1.heapInsert(200);
         heap1.heapInsert(5);
         heap1.heapInsert(67);
@@ -28,4 +26,12 @@ public class MaxMinTester {
         System.out.println(max + "  " + min);
 
     }// end main
+    private static ArrayList automateInputArray(int size, String mode) {
+    	ArrayList<Integer> inputArray = new ArrayList<Integer>();
+        if (mode.equals("dupInd")) {
+        	for (int i = 0; i < size; i++)
+                inputArray.add(i, i * 2);
+			}
+        return inputArray;
+    }
 }
