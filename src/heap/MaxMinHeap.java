@@ -14,10 +14,10 @@ import java.util.ArrayList;
  * @version (20407-2020b)
  */
 public class MaxMinHeap {
-    private ArrayList<Integer> _heap; // an array that represents the MAX-MIN heap
-    private int _heapSize; // the size of the heap
+    protected ArrayList<Integer> _heap; // an array that represents the MAX-MIN heap
+    protected int _heapSize; // the size of the heap
     final static char SPACE = ' '; //used mainly for debugging the display of the binary tree
-    final static int PAD = 3; //used for beutifyig the display of the binary tree 
+    final static int PAD = 5; //used for beutifyig the display of the binary tree 
     /**
      * Constructor of MaxMinHeap from array of integers given as parameter.
      * Complexity O(nlgn)
@@ -455,7 +455,7 @@ public class MaxMinHeap {
     }
 
     /**
-     * Calculates the index of the paren given index ind
+     * Calculates the index of the parent given index ind
      * Complexity O(1)
      * @param ind The index to calculate for
      * @reutrn The index of ind's parent

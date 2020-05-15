@@ -1,96 +1,94 @@
 package heap;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Write a description of class MaxMinTester here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (Ornit Cohen Gindi)
+ * @version (2020b -20407)
  */
 public class MaxMinTester {
 	public static void main(String[] args) throws Exception {
-				
-		
-		// Path path1 = Paths.get("c:\\Users\\Ornit\\Desktopheap.txt");
-		// Path path2 = Paths.get("src/testFiles/heap.txt");
-		// ArrayList<Integer> inputArray = automateInputArray(50, "dupInd");
-		//ArrayList<Integer> intArray = new ArrayList<Integer>(readFile());
-		
-		ArrayList<Integer> intArray = readFile();
-		MaxMinHeap heap1 = new MaxMinHeap(intArray);
+		int request;
+		char choice = InputUtils.startMenu();	
+		if (choice == '0') {
+			System.out.println("Bye Bye");
+			return;
+		}
+		else {
 
-		heap1.heapInsert(200);
-//		heap1.heapInsert(5);
-//		heap1.heapInsert(67);
-		int max = heap1.extractMax();
-//		int min = heap1.extractMin();
-		//heap1.heapDelete(7);
+			ArrayList<Integer> intArray = InputUtils.readFile();
+			MaxMinHeap heap = new MaxMinHeap(intArray); //congrats! we have a heap!
+			
+			while (choice != '0') {
+				choice = InputUtils.heapMenu();
+				Scanner userScanner = new Scanner(System.in);
 
-		System.out.println(heap1);
-		// System.out.println(max + " " + min);
 
+				switch (choice) {
+					case '1':{
+						//heap.heapSort();
+						break;
+					}
+					case '2':{
+						System.out.println("What Ineger would you like to Insert?");
+						request = userScanner.nextInt();
+						heap.heapInsert(request);
+						break;
+					}
+					case '3':{
+						heap.extractMax();
+						break;
+					}
+					case '4':{
+						heap.extractMin();
+						break;
+					}
+					case '5':{
+						System.out.println("Please insert the index of the value you wish to remove?");
+						request = userScanner.nextInt();
+						heap.heapDelete(request);
+						break;
+					}
+					case '6':{
+						System.out.println("Display Max-Min heap as a binary tree:\n");
+						System.out.println(heap); //show the heap after each procedure;
+						break;
+					}
+					case '7':{
+						System.out.println("Display Max-Min heap as an array:\n");
+//						heap.showHeapAsArray();
+						//System.out.println(heap._heap);
+
+						break;
+					}
+					case '0':{
+						System.out.println("Bye Bye");
+						userScanner.close();
+						return;
+					}
+					default:{
+						System.out.println("You presed a key that was not on the list");
+						break;
+					}//end default
+				}//end switch
+				choice = InputUtils.heapMenu();
+				userScanner.close();
+			}//end while
+		}//end else
 	}// end main
 
-	private static ArrayList<Integer> readFile() {
-		System.out.println("Please insert the full path to your txt file:");
-		Scanner scan = new Scanner(System.in);
-		
-		Path path = Paths.get(scan.nextLine());
-		System.out.println(path);
-		
-		ArrayList<Integer> intArray = new ArrayList<Integer>();
-		File file;
-		
-		try {
-			file = new File(path.toString());
-			Scanner scannedFile = new Scanner(file);
 
-			while (scannedFile.hasNext()) {
-				//System.out.println(scannedFile.nextLine());
-				if (scannedFile.hasNextInt()) {
-					intArray.add(scannedFile.nextInt());
-				} else {
-					scannedFile.next();
-				}
-			}
-			System.out.println(intArray);
-		} catch (Exception e) {
-			System.out.println("There is a problem with opening the file   "+e );
-		}
-		finally {
-			return intArray;
-
-		 }
-	}
-
-	private static ArrayList automateInputArray(int size, String mode) {
-		ArrayList<Integer> inputArray = new ArrayList<Integer>();
-		switch (mode) {
-		case "dupInd":
-			for (int i = 0; i < size; i++)
-				inputArray.add(i, i * 2);
-			break;
-		case "ind":
-			for (int i = 0; i < size; i++)
-				inputArray.add(i, i);
-		default:
-			break;
-		}
-
-		return inputArray;
-	}
-
-	private static ArrayList generateArrayFromFile(File file) throws Exception {
-		ArrayList<Integer> inputArray = new ArrayList<Integer>();
-
-		return inputArray;
-	}
 }
 
-//C:/Users/Ornit/Desktop/heap.txt
+
+//System.out.println(heap1);
+// System.out.println(max + " " + min);
+
+//C:/Users/Ornit/Desktop/heap2.txt
+//Path path1 = Paths.get("c:\\Users\\Ornit\\Desktopheap.txt");
+// Path path2 = Paths.get("src/testFiles/heap.txt");
+// ArrayList<Integer> inputArray = automateInputArray(50, "dupInd");
+// ArrayList<Integer> intArray = new ArrayList<Integer>(readFile());
