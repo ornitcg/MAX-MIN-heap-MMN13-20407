@@ -1,7 +1,10 @@
 package heap;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+//import heap.InputUtils.*;
 
 /**
  * Write a description of class MaxMinTester here.
@@ -11,84 +14,113 @@ import java.util.Scanner;
  */
 public class MaxMinTester {
 	public static void main(String[] args) throws Exception {
+		Scanner scanInput = new Scanner(System.in);
 		int request;
-		char choice = InputUtils.startMenu();	
-		if (choice == '0') {
-			System.out.println("Bye Bye");
-			return;
-		}
-		else {
+		// InputUtils.menu("start"); // show first menu;
+		int choice = 2; // = Integer.parseInt(scanInput.nextLine());
+		// System.out.println("your choice is:" + choice + "\n");
 
-			ArrayList<Integer> intArray = InputUtils.readFile();
-			MaxMinHeap heap = new MaxMinHeap(intArray); //congrats! we have a heap!
+		while (choice != 0 && choice != 1) {
+			InputUtils.menu("start"); // show first menu;
+			try {
+				choice = Integer.parseInt(scanInput.nextLine());
+				if (choice != 0 && choice != 1)
+					InputUtils.wrongKey();
+			} catch (Exception e) {
+				InputUtils.wrongKey();
+			}
+			// System.out.println("your choice is:" + choice + "\n");
 			
-			while (choice != '0') {
-				choice = InputUtils.heapMenu();
-				Scanner userScanner = new Scanner(System.in);
 
+		}
 
+		if (choice == 0) {
+			System.out.println("Bye Bye");
+			scanInput.close();
+			return;
+		} else {
+			System.out.println("Please insert the full path to your txt file:\n");
+			// Path path = Paths.get(scanInput.nextLine());
+			Path path = Paths.get("testFiles/heap.txt");
+			ArrayList<Integer> intArray = InputUtils.readFile(path);
+			MaxMinHeap heap = new MaxMinHeap(intArray); // congrats! we have a heap!
+			System.out.println("CONGRATS! YOU HAVE A HEAP\n");
+			while (choice != 0) {
+				InputUtils.menu("heap"); // show second menu
+
+				choice = Integer.parseInt(scanInput.nextLine());
+
+				System.out.println(choice); // debug
 				switch (choice) {
-					case '1':{
-						//heap.heapSort();
-						break;
+				case 1: {// sort using heap
+					System.out.println("\nThe sorted array of values using heapsort:\n" + heap.heapSort() + "\n");
+					break;
+				}
+				case 2: {// insert new value
+					System.out.println("\nWhat Integer would you like to Insert?\n");
+					request = Integer.parseInt(scanInput.nextLine());
+					heap.heapInsert(request);
+					break;
+				}
+				case 3: {// extract max
+					int max = heap.extractMax();
+					if (max == Integer.MIN_VALUE)
+						System.out.println("\nHEAP IS EMPTY! CANNOT EXTRACT\n");
+					else
+						System.out.println("\nExtracted max value from heap. The max value was: " + max + "\n");
+					break;
+				}
+				case 4: {// extract min
+					if (heap.isEmpty())
+						System.out.println("\nHEAP IS EMPTY! CANNOT EXTRACT\n");
+					else {
+						int min = heap.extractMin();
+						System.out.println("\nExtracted min value from heap. The min value was: " + min + "\n");
 					}
-					case '2':{
-						System.out.println("What Ineger would you like to Insert?");
-						request = userScanner.nextInt();
-						heap.heapInsert(request);
-						break;
-					}
-					case '3':{
-						heap.extractMax();
-						break;
-					}
-					case '4':{
-						heap.extractMin();
-						break;
-					}
-					case '5':{
-						System.out.println("Please insert the index of the value you wish to remove?");
-						request = userScanner.nextInt();
-						heap.heapDelete(request);
-						break;
-					}
-					case '6':{
-						System.out.println("Display Max-Min heap as a binary tree:\n");
-						System.out.println(heap); //show the heap after each procedure;
-						break;
-					}
-					case '7':{
-						System.out.println("Display Max-Min heap as an array:\n");
-//						heap.showHeapAsArray();
-						//System.out.println(heap._heap);
+					break;
+				}
+				case 5: {// heap delete
+					if (heap.isEmpty())
+						System.out.println("\nHEAP IS EMPTY! NOTHING TO DELETE\n");
+					else {
+						System.out.println("\nPlease insert the index of the value you wish to remove?\n");
+						request = Integer.parseInt(scanInput.nextLine());
+						if (heap.heapDelete(request))
+							System.out.println("\nDeletion was successful!\n");
+						else
+							System.out.println("\nDeletion was not successful! the requested index is out of bound\n");
 
-						break;
 					}
-					case '0':{
-						System.out.println("Bye Bye");
-						userScanner.close();
-						return;
-					}
-					default:{
-						System.out.println("You presed a key that was not on the list");
-						break;
-					}//end default
-				}//end switch
-				choice = InputUtils.heapMenu();
-				userScanner.close();
-			}//end while
-		}//end else
+					break;
+				}
+				case 6: {// display as tree
+					System.out.println(heap); // show the heap after each procedure;
+					break;
+				}
+				case 7: {// display as array
+					heap.showHeapAsArray();
+					// System.out.println(heap._heap);
+
+					break;
+				}
+				case 0: {// quit
+					System.out.println("Bye Bye");
+					scanInput.close();
+
+					return;
+				}
+				default: {
+					InputUtils.wrongKey();
+					break;
+				} // end default
+				}// end switch
+			} // end while
+		} // end else
+		scanInput.close();
+
 	}// end main
-
 
 }
 
-
-//System.out.println(heap1);
-// System.out.println(max + " " + min);
-
 //C:/Users/Ornit/Desktop/heap2.txt
-//Path path1 = Paths.get("c:\\Users\\Ornit\\Desktopheap.txt");
-// Path path2 = Paths.get("src/testFiles/heap.txt");
-// ArrayList<Integer> inputArray = automateInputArray(50, "dupInd");
-// ArrayList<Integer> intArray = new ArrayList<Integer>(readFile());
+//heap/testFiles/heap.txt
