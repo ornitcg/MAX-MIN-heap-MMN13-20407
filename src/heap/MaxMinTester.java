@@ -16,22 +16,16 @@ public class MaxMinTester {
 	public static void main(String[] args) throws Exception {
 		Scanner scanInput = new Scanner(System.in);
 		int request;
-		// InputUtils.menu("start"); // show first menu;
-		int choice = 2; // = Integer.parseInt(scanInput.nextLine());
-		// System.out.println("your choice is:" + choice + "\n");
-
+		int choice = 2; //
 		while (choice != 0 && choice != 1) {
 			InputUtils.menu("start"); // show first menu;
 			try {
 				choice = Integer.parseInt(scanInput.nextLine());
 				if (choice != 0 && choice != 1)
 					InputUtils.wrongKey();
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				InputUtils.wrongKey();
 			}
-			// System.out.println("your choice is:" + choice + "\n");
-			
-
 		}
 
 		if (choice == 0) {
@@ -44,13 +38,16 @@ public class MaxMinTester {
 			Path path = Paths.get("testFiles/heap.txt");
 			ArrayList<Integer> intArray = InputUtils.readFile(path);
 			MaxMinHeap heap = new MaxMinHeap(intArray); // congrats! we have a heap!
-			System.out.println("CONGRATS! YOU HAVE A HEAP\n");
+			System.out.println("CONGRATS! YOU HAVE A MAX-MIN HEAP\n");
 			while (choice != 0) {
 				InputUtils.menu("heap"); // show second menu
+				try {
+					choice = Integer.parseInt(scanInput.nextLine());
+				} catch (NumberFormatException e) {
+					InputUtils.wrongKey();
+				}
 
-				choice = Integer.parseInt(scanInput.nextLine());
-
-				System.out.println(choice); // debug
+				// System.out.println(choice); // debug
 				switch (choice) {
 				case 1: {// sort using heap
 					System.out.println("\nThe sorted array of values using heapsort:\n" + heap.heapSort() + "\n");
@@ -63,18 +60,18 @@ public class MaxMinTester {
 					break;
 				}
 				case 3: {// extract max
-					int max = heap.extractMax();
-					if (max == Integer.MIN_VALUE)
+					Integer max = heap.extractMax();
+					if (max == null)
 						System.out.println("\nHEAP IS EMPTY! CANNOT EXTRACT\n");
 					else
 						System.out.println("\nExtracted max value from heap. The max value was: " + max + "\n");
 					break;
 				}
 				case 4: {// extract min
-					if (heap.isEmpty())
+					Integer min = heap.extractMin();
+					if (min == null)
 						System.out.println("\nHEAP IS EMPTY! CANNOT EXTRACT\n");
 					else {
-						int min = heap.extractMin();
 						System.out.println("\nExtracted min value from heap. The min value was: " + min + "\n");
 					}
 					break;

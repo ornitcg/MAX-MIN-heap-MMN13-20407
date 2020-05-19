@@ -2,7 +2,6 @@ package heap;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,6 +34,9 @@ public class InputUtils {
 		}
 	}
 
+	/**
+	 * Prints out a message about wrong input
+	 */
 	public static void wrongKey() {
 		System.out.println("You pressed a key that was not on the list\nPlease try again\n");
 	}

@@ -46,13 +46,15 @@ public class MaxMinHeap {
 	 */
 	private void buildHeap() {
 		for (int node = 0; node < _heapSize; node++)
-			if (indexDepth(node) % 2 == 1)// all the MIN first
+			if (indexDepth(node) % 2 == 1) {// all the MIN first
+				System.out.println("BuildHeap on node#" + node + "\n");// debug
 				heapify(node);
-
-		for (int node = _heapSize - 1; node >= 0; node--) {
-			if (indexDepth(node) % 2 == 0) // all the MAX second
+			}
+		for (int node = _heapSize - 1; node >= 0; node--)
+			if (indexDepth(node) % 2 == 0) { // all the MAX second
+				System.out.println("BuildHeap on node#" + node + "\n");// debug
 				heapify(node);
-		}
+			}
 	}// end buildHeap
 
 	/**
@@ -61,35 +63,82 @@ public class MaxMinHeap {
 	 * 
 	 * @param ind index of array representing the vinary tree heap
 	 **/
-	public void heapify(int ind) {
-//		System.out.println("heapify : node# " + ind + "\n" + this); //debug
+	private void heapify(int ind) {
+		System.out.println("heapify : node# " + ind + "\n" + this); // debug
 		int depth = indexDepth(ind);
 		int maxChild = maxChild(ind); // saving index of the maximum of an index's children
-		int maxGrandChild = maxGrandChild(ind); // saving index of maximum of an index's grandchildren
+		int minChild = minChild(ind); // saving index of the maximum of an index's children
+		int maxGrandchild = maxGrandchild(ind); // saving index of maximum of an index's grandchildren
+		int minGrandchild = minGrandchild(ind); // saving index of maximum of an index's grandchildren
+		int gp = grandParent(ind); // gp stands for grand parent
+		Integer current = get(ind);
+		Integer parent = get(parent(ind));
 
-		if (depth % 2 == 0) { // if on even(max) level
-			if (hasGrandchild(ind) && maxGrandChild != ind) {
-				swap(_heap, ind, maxGrandChild);
-				heapify(maxGrandChild);
-			} else if (hasChild(ind) && _heap.get(ind) < _heap.get(maxChild)) {
+		if (depth % 2 == 0) { // if depth level is even(max)
+			if (gp != -1 && current > get(gp)) { // correction towards MAX node
+				System.out.println("current " + current + " > gp " + get(gp)); // debug
+				swap(_heap, ind, gp);
+				heapify(gp);
+			} else if (hasGrandchild(ind) && maxGrandchild != ind) {
+				System.out.println("current " + current + " < maxGrandchild " + get(maxGrandchild)); // debug
+				swap(_heap, ind, maxGrandchild);
+				heapify(maxGrandchild);
+			} else if (hasChild(ind) && current < get(maxChild)) {
+				System.out.println("current " + current + " < maxChild " + get(maxChild)); // debug
 				swap(_heap, ind, maxChild);
 				heapify(maxChild);
-			} else if (!hasChild(ind) && _heap.get(parent(ind)) > _heap.get(ind)) {// ind is at the bottom of the tree
+			} else if (!hasChild(ind) && parent != null && current < parent) {
+				// case ind is at the bottom of the tree
+				System.out.println("current " + current + " < parent " + parent); // debug
 				swap(_heap, ind, parent(ind));
 				heapify(parent(ind));
 			}
-
 		} // end if MAX
-		else // if on odd(min) level
+		else // if depth level is odd(min)
 		{
-			int grandparent = (ind + 1) / 4 - 1;
-			if (grandparent < 1) // case of no grandparent
-				return;
-			if (_heap.get(ind) < _heap.get(grandparent)) {
-				swap(_heap, ind, grandparent);
-				heapify(grandparent);
+			if (gp > -1 && current < get(gp)) { // case of no grandparent
+				System.out.println("current " + current + " < gp " + get(gp)); // debug
+				swap(_heap, ind, gp);
+				heapify(gp);
+			} else if (hasGrandchild(ind) && current > get(minGrandchild)) {
+				System.out.println("current " + current + " > minGrandchild " + get(minGrandchild)); // debug
+				swap(_heap, ind, minGrandchild);
+				heapify(minGrandchild);
+			} else if (!hasGrandchild(ind) && parent != null && current > parent) {
+				System.out.println("current " + current + " > parent " + parent); // debug
+				swap(_heap, ind, parent(ind));
+				// System.out.println("swap " +current+ " with "+ parent); //debug
+				heapify(parent(ind));
+			} else if (hasChild(ind) && current > get(minChild)) {
+				System.out.println("current " + current + " > minChild " + get(minChild)); // debug
+				swap(_heap, ind, minChild);
+				heapify(minChild);
 			}
 		} // end if MIN
+	}
+
+	private int minChild(int ind) {
+		int left = leftSon(ind); // left already considers the 0
+		int right = rightSon(ind); // right already considers the 0
+		int min = ind;
+		if (right < _heapSize && get(right) < get(min))
+			min = right;
+		if (left < _heapSize && get(left) < get(min))
+			min = left;
+		return min;
+	}
+
+	/**
+	 * Calculates the index of a grandparent of a given index ind
+	 * 
+	 * @param ind the index for which the grandparent is calculated
+	 * @return index of the grandparent or -1 if a grandparent does not exist
+	 */
+	private int grandParent(int ind) {
+		int gp = (ind + 1) / 4 - 1;
+		if (gp < 0)
+			return -1;
+		return gp;
 	}
 
 	/**
@@ -97,10 +146,10 @@ public class MaxMinHeap {
 	 * 
 	 * @return The maximum value that use to be in heap before its removal
 	 */
-	public int extractMax() {
+	public Integer extractMax() {
 		if (_heapSize == 0)
-			return Integer.MIN_VALUE;
-		int max = _heap.get(0);
+			return null;
+		Integer max = get(0);
 		// System.out.println(max);// debug
 		if (_heapSize > 1)
 			swap(_heap, 0, _heapSize - 1);
@@ -116,17 +165,17 @@ public class MaxMinHeap {
 	 * 
 	 * @return The minimum value that use to be in heap before its removal
 	 */
-	public int extractMin() {
-		if (_heapSize == 0)
-			return Integer.MAX_VALUE;
-		int minInd = getMinInd();
-		int minVal = _heap.get(minInd);
+	public Integer extractMin() {
+		if (_heapSize == 0) // empty heap
+			return null;
+		Integer minInd = getMinHeapInd();// save index
+		Integer minVal = get(minInd);// save value
 		if (_heapSize > 2)
 			// no need to swap in case of 1 or 2 elements in heap. since then the min will
 			// be the last one anyway
-			swap(_heap, minInd, _heapSize - 1);
-		_heap.remove(_heapSize - 1); // remove the min (it's now in the lase place of the array)
-		_heapSize -= 1; // update size of array
+			swap(_heap, minInd, _heapSize - 1); // switch between last and the minimum
+		_heap.remove(_heapSize - 1); // remove the min (it's now in the last place of the array)
+		_heapSize -= 1; // update size of heap
 		if (_heapSize > 3)
 			heapify(minInd); // min is the index of a node with a different value than before swap. needs to
 								// be corrected
@@ -140,93 +189,76 @@ public class MaxMinHeap {
 	 * @return true if deletion was successful and false otherwise
 	 */
 	public boolean heapDelete(int ind) {
-		if (ind >= _heapSize)
+		if (ind < 0 || ind >= _heapSize) // required index is out of bounds
 			return false;
-		int max = _heap.get(0);
-		_heap.set(ind, max + 1); // mark the wanted to be removed index
-		bubbleUp(ind);
-		extractMax();
+		Integer last = get(_heapSize - 1); // for readability
+		_heap.set(ind, last); // mark the wanted to be removed index
+		_heap.remove(_heapSize - 1);
+		_heapSize -= 1;
+		heapify(ind); // make the new maximum go to the top and then extract it
 		return true;
 	}
 
-	public void heapInsert(int key) {
-		if (_heapSize == 0) // case of empty heap
-		{
+	/**
+	 * Removes the node of the requested index from heap
+	 * 
+	 * @param ind Index of value to delete from heap
+	 * @return true if deletion was successful and false otherwise
+	 */
+	public boolean heapDelete2(int ind) {
+		if (ind < 0 || ind >= _heapSize) // required index is out of bounds
+			return false;
+		int maxVal = get(0); // for readability
+		_heap.set(ind, maxVal + 1); // mark the wanted to be removed index
+		heapify(ind); // make the new maximum go to the top and then extract it
+		extractMax(); // removal of the unwanted node and correction of the heap
+		return true;
+	}
+
+	/**
+	 * Adds a new value of Integer type to heap
+	 * 
+	 * @param key
+	 */
+	public void heapInsert(Integer key) {
+		if (_heapSize == 0) { // case of empty heap
 			_heapSize = 1;
-			_heap.add(key);
+			_heap.add(0, key);
 			return;
 		}
-		int max = _heap.get(0); // keep max for later
-		_heap.set(0, key); //place new value into place of max
-		heapify(0); // O(lgn)
-		_heap.add(_heapSize, max); // place the max value kept aside, at the end of the array
+		_heap.add(_heapSize, key); // place the max value kept aside, at the end of the array
 		_heapSize += 1; // update size of heap
-		heapify(_heapSize - 1); // O(lgn) //used to be bubble up
+		heapify(_heapSize - 1); // O(lgn)
 	}
-	
-	public ArrayList<Integer> heapSort(){
+
+	/**
+	 * Sorts the values of the Max-Min heap. Does not change the original heap
+	 * 
+	 * @return An ArrayList containing sorted values of heap
+	 */
+	public ArrayList<Integer> heapSort() {
 		MaxMinHeap tempHeap = new MaxMinHeap(this); // copy heap
 		ArrayList<Integer> sorted = new ArrayList<Integer>();
 		for (int i = 0; i < _heapSize; i++) {
-			int tempMax = tempHeap.extractMax();
-			sorted.add(0,tempMax);
+			Integer tempMax = tempHeap.extractMax();
+			sorted.add(0, tempMax);
 		}
 		return sorted;
-	}
+	}// end of heapSort
 
-	public int getMaxInd() {
-		return 0;
-	}
-
-	public int getMinInd() {
+	private int getMinHeapInd() {
 		int left = Integer.MAX_VALUE;
 		int right = Integer.MAX_VALUE;
 
 		if (_heapSize > 1)
-			left = _heap.get(1);
+			left = get(1);
 		else
 			return 0;
 		if (_heapSize > 2)
-			right = _heap.get(2);
+			right = get(2);
 		if (left < right)
 			return 1;
 		return 2;
-	}
-
-	private void bubbleUp(int ind) // to play on last element of heap (always last)
-	{
-		int depth = indexDepth(ind);
-		int minGrandChild = minGrandChild(ind);
-		int minChild = minChild(ind);
-		if (depth % 2 == 0) { // if on MAX level
-			int grandparent = (ind + 1) / 4 - 1;
-			if (grandparent < 0) // case of no grandparent
-				return;
-			if (_heap.get(ind) > _heap.get(grandparent)) {
-				swap(_heap, ind, grandparent);
-				bubbleUp(grandparent);
-			}
-		} else if (!hasChild(ind) && _heap.get(parent(ind)) < _heap.get(ind)) {// ind is at the bottom of the tree
-			swap(_heap, ind, parent(ind));
-			bubbleUp(parent(ind));
-		} else if (hasGrandchild(ind) && _heap.get(ind) > minGrandChild(ind)) {
-			swap(_heap, ind, minGrandChild);
-			bubbleUp(minGrandChild);
-		} else if (hasChild(ind) && _heap.get(ind) > minChild) {
-			swap(_heap, ind, minChild);
-			bubbleUp(minChild);
-		}
-
-	}
-
-	/**
-	 * Gets the value of the heap , that is at a given index
-	 * 
-	 * @param index An integer
-	 * @return The value at index
-	 */
-	public int getValue(int index) {
-		return _heap.get(index);
 	}
 
 	/**
@@ -251,15 +283,15 @@ public class MaxMinHeap {
 			int spacesBefore = subTreeWidth / 2 - PAD1 / 2; // spaces to print befor each row of numbers
 			int spacesBetween = 2 * spacesBefore + 1; // spaces to print between the tree numbers
 			if (depth % 2 == 0)
-				heapStr += "(Level"+spacePad(depth,PAD2)+")" ;//+ " MAX ";
+				heapStr += "(Level" + spacePad(depth, PAD2) + ")";// + " MAX ";
 			else
-				heapStr += "(Level"+ spacePad(depth,PAD2)+")" ;// " MIN ";
+				heapStr += "(Level" + spacePad(depth, PAD2) + ")";// " MIN ";
 			heapStr += printSpaces(spacesBefore);
 			int nodes = maxNodesInLevel(depth);
 			for (int node = 1; node <= nodes; node++) // loop on the number of nodes in a row
 			{
 				if (index < _heapSize)
-					heapStr += spacePad(_heap.get(index), PAD1);
+					heapStr += spacePad(get(index), PAD1);
 				if (node < nodes)
 					heapStr += printSpaces(spacesBetween);
 				index++;
@@ -284,21 +316,10 @@ public class MaxMinHeap {
 		String heapStr = "";
 		for (int i = 0; i < _heapSize; i++)
 			if (i == _heapSize - 1)
-				heapStr += _heap.get(i);
+				heapStr += get(i);
 			else
-				heapStr += _heap.get(i) + ", ";
+				heapStr += get(i) + ", ";
 		System.out.println(heapStr);
-	}
-
-	/**
-	 * Calculates the maximum potential amount of nodes in tree from root to a
-	 * specific depth
-	 * 
-	 * @param depth a level deep in the binary tree
-	 * @return number of maximum nodes counted from root to depth
-	 */
-	private static int maxNodesInDepth(int depth) {
-		return (int) Math.pow(2, depth + 1) - 1;
 	}
 
 	/**
@@ -344,29 +365,11 @@ public class MaxMinHeap {
 		int left = leftSon(ind); // left already considers the 0
 		int right = rightSon(ind); // right already considers the 0
 		int max = ind;
-		if (right < _heapSize && _heap.get(right) > _heap.get(max))
+		if (right < _heapSize && get(right) > get(max))
 			max = right;
-		if (left < _heapSize && _heap.get(left) > _heap.get(max))
+		if (left < _heapSize && get(left) > get(max))
 			max = left;
 		return max;
-	}
-
-	/**
-	 * Calculates the min value between a given index and its two sons (or son).
-	 * (Complexity O(1))
-	 * 
-	 * @param ind index to calculate for
-	 * @return index of the minimum value between ind and its sons
-	 */
-	private int minChild(int ind) {
-		int left = leftSon(ind);
-		int right = rightSon(ind);
-		int min = ind;
-		if (right < _heapSize && _heap.get(right) < _heap.get(min))
-			min = right;
-		if (left < _heapSize && _heap.get(left) < _heap.get(min))
-			min = left;
-		return min;
 	}
 
 	/**
@@ -376,17 +379,17 @@ public class MaxMinHeap {
 	 * @param ind index to calculate for
 	 * @return index of the maximum value between ind and its grandchildren
 	 */
-	private int maxGrandChild(int ind) {
+	private int maxGrandchild(int ind) {
 		ind = ind + 1; // to avoid the 0 case
-		int[] grandChildren = { ind * 4, ind * 4 + 1, ind * 4 + 2, ind * 4 + 3 }; // indices of grandchildren of ind
+		int[] grandchildren = { ind * 4, ind * 4 + 1, ind * 4 + 2, ind * 4 + 3 }; // indices of grandchildren of ind
 		int max = ind - 1;
 		int grandchild;
-		for (int i = 0; i < grandChildren.length; i++) {
-			grandchild = grandChildren[i] - 1;
-			if (grandchild < _heapSize && _heap.get(grandchild) > _heap.get(max))
+		for (int i = 0; i < grandchildren.length; i++) {
+			grandchild = grandchildren[i] - 1;
+			if (grandchild < _heapSize && rightSon(ind - 1) < _heapSize && get(grandchild) > get(max))
 				max = grandchild;
 		}
-		if (grandChildren[2] - 1 >= _heapSize && rightSon(ind - 1) < _heapSize && _heap.get(rightSon(ind - 1)) > _heap.get(max)) 
+		if (grandchildren[2] - 1 >= _heapSize && rightSon(ind - 1) < _heapSize && get(rightSon(ind - 1)) > get(max))
 			// case of less than 3 grandchildren. comparison to right son is required
 			max = rightSon(ind - 1);
 		return max;
@@ -397,18 +400,21 @@ public class MaxMinHeap {
 	 * grandchildren (or less). Complexity O(1)
 	 * 
 	 * @param ind index to calculate for
-	 * @return index of thee minimum value between ind and its grandchildren
+	 * @return index of the minimum value between ind and its grandchildren
 	 */
-	private int minGrandChild(int ind) {
+	private int minGrandchild(int ind) {
 		ind = ind + 1; // to avoid the 0 case
-		int[] grandChildren = { ind * 4, ind * 4 + 1, ind * 4 + 2, ind * 4 + 3 }; // indices of grandchildren of ind
-		int min = ind;
+		int[] grandchildren = { ind * 4, ind * 4 + 1, ind * 4 + 2, ind * 4 + 3 }; // indices of grandchildren of ind
+		int min = ind - 1;
 		int grandchild;
-		for (int i = 0; i < grandChildren.length; i++) {
-			grandchild = grandChildren[i] - 1;
-			if (grandchild < _heapSize && _heap.get(grandchild) < _heap.get(min))
+		for (int i = 0; i < grandchildren.length; i++) {
+			grandchild = grandchildren[i] - 1;
+			if (grandchild < _heapSize && get(grandchild) < get(min))
 				min = grandchild;
 		}
+		if (grandchildren[2] - 1 >= _heapSize && rightSon(ind - 1) < _heapSize && get(rightSon(ind - 1)) < get(min))
+			// case of less than 3 grandchildren. comparison to right son is required
+			min = rightSon(ind - 1);
 		return min;
 	}
 
@@ -416,7 +422,7 @@ public class MaxMinHeap {
 	 * Calculates the index of the left son of the given index ind. Complexity O(1)
 	 * 
 	 * @param ind The index to calculate for
-	 * @reutrn The index of ind's left son
+	 * @return The index of ind's left son
 	 */
 	private static int leftSon(int ind) {
 		return (ind + 1) * 2 - 1;
@@ -426,7 +432,7 @@ public class MaxMinHeap {
 	 * Calculates the index of the right son of the given index ind. Complexity O(1)
 	 * 
 	 * @param ind The index to calculate for
-	 * @reutrn The index of ind's right son
+	 * @return The index of ind's right son
 	 */
 	private static int rightSon(int ind) {
 		return (ind + 1) * 2;
@@ -439,9 +445,8 @@ public class MaxMinHeap {
 	 * @param ind index of array representing thee tree
 	 * @return level at which the index is
 	 */
-	public static int indexDepth(int ind) {
+	private static int indexDepth(int ind) {
 		return (int) (Math.log(ind + 1) / Math.log(2));
-		// TEST: System.out.println("The level of index is :" + nodeDepth(number));
 	}
 
 	/**
@@ -460,7 +465,10 @@ public class MaxMinHeap {
 	}
 
 	/**
-	 * Returns a string of spaced at a lngth of a requested amount
+	 * Returns a string of spaced at a length of a requested amount
+	 * 
+	 * @param amount The amount of space characters to string
+	 * @return The String created of the wanted amount of space characters
 	 */
 	private static String printSpaces(int amount) {
 		String spaces = "";
@@ -499,10 +507,6 @@ public class MaxMinHeap {
 		return (ind + 1) / 2 - 1; // returns the floor of the result which is the right answer
 	}
 
-	private boolean hasParent(int ind) {
-		return (ind + 1) / 2 - 1 >= 0; // returns the floor of the result which is the right answer
-	}
-
 	/**
 	 * Calculates the number of possible nodesin a specific level of the binary tree
 	 * heap Complexity O(1)
@@ -515,12 +519,50 @@ public class MaxMinHeap {
 		return (int) Math.pow(2, level);
 	}
 
-	public int get(int index) {
+	/**
+	 * Gets the value at a specific index
+	 * 
+	 * @param index The place of the wanted value
+	 * @return The value at the given index
+	 */
+	public Integer get(int index) {
+		if (index < 0 || index >= _heapSize)
+			return null;
 		return _heap.get(index);
 	}
 
+	/**
+	 * Checks if current heap is empty
+	 * 
+	 * @return True if heap is empty and false otherwise
+	 */
 	public boolean isEmpty() {
 		return _heapSize == 0;
 	}
 
+	/**
+	 * // * Calculates the maximum potential amount of nodes in tree from root to a
+	 * // * specific depth // * // * @param depth a level deep in the binary tree //
+	 * * @return number of maximum nodes counted from root to depth //
+	 */
+//	private static int maxNodesInDepth(int depth) {
+//		return (int) Math.pow(2, depth + 1) - 1;
+//	}
+
+//	private boolean hasParent(int ind) {
+//		return (ind + 1) / 2 - 1 >= 0; // returns the floor of the result which is the right answer
+//	}
+
+//	private int getMaxInd() {
+//	return 0;
+//}
+//	/**
+//	 * Gets the value of the heap , that is at a given index
+//	 * 
+//	 * @param index An integer
+//	 * @return The value at index
+//	 */
+//	public int getValue(int index) {
+//		return _heap.get(index);
+//	}
 }
