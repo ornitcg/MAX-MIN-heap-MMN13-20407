@@ -30,14 +30,13 @@ public class IOUtils {
 		}
 		if (type.equals("file")) {
 			System.out.println("\nWhich input do you wish to use? please press the key for the chosen action");
-			System.out.println("1 To use default file from package: heap.txt");
-			System.out.println("2 To insert your own path to file");
-
-			System.out.println("0 Quit");
+			System.out.println("1 Default file from package: heap.txt");
+			System.out.println("2 Your own file");
+			System.out.println("0 To Quit");
 		}
 		if (type.equals("heap")) {
-			System.out.println("\n------------------------------------------------------");
-			System.out.println("\nWhat would you like to do next? please press the key for the chosen action");
+			System.out.println("\n---------------What would you like to do next?-------------------");
+			System.out.println("\nplease press the key for the chosen action");
 			System.out.println("1 Heap-sort");
 			System.out.println("2 Heap-Insert");
 			System.out.println("3 Heap-Extract-Max");
@@ -46,18 +45,19 @@ public class IOUtils {
 			System.out.println("6 Display heap as binary tree");
 			System.out.println("7 Display heap as array");
 			System.out.println("0 Quit");
-			System.out.println("\n------------------------------------------------------");
-
+			System.out.println("\n-----------------------------------------------------------------");
 		}
 	}//end menu
-
+	
+	
 	/**
 	 * Prints out a message about wrong input
 	 */
-	public static void wrongKey() {
+	public static void wrongKeyMessage() {
 		System.out.println("You pressed a key that was not on the list\nPlease try again\n");
 	}
 
+	
 	/**
 	 * Creates an array that contains all the integer values read from the file
 	 * 
@@ -87,23 +87,6 @@ public class IOUtils {
 		return intArray;
 	}//end readFile
 
-//	// in use for author
-//	public static ArrayList<Integer> automateInputArray(int size, String mode) {
-//		ArrayList<Integer> inputArray = new ArrayList<Integer>();
-//		switch (mode) {
-//		case "dupInd":
-//			for (int i = 0; i < size; i++)
-//				inputArray.add(i, i * 2);
-//			break;
-//		case "ind":
-//			for (int i = 0; i < size; i++)
-//				inputArray.add(i, i);
-//		default:
-//			break;
-//		}
-//
-//		return inputArray;
-//	}
 
 	/**
 	 * Returns a string of spaced at a length of a requested amount
