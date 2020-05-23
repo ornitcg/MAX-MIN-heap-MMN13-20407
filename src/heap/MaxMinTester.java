@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Here a user can give a text file , full of integers as input and play with
- * the MaxMinHeap methods on that input
+ * Runs the user interface for creating and changing a MaxMinHeap.
+ * 
  *
  * @author (Ornit Cohen Gindi)
  * @version (2020b -20407)
  */
 public class MaxMinTester {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		Scanner scanInput = new Scanner(System.in);
 		int reqIndex;
 		ArrayList<Integer> intArray = null;
@@ -42,7 +42,7 @@ public class MaxMinTester {
 				System.out.println(choice);
 				switch (choice) {
 				case 1: {// sort using heap
-					System.out.println("OK! Loading heap.txt"); // default path is used here
+					System.out.println("\nOK! Loading heap.txt"); // default path is used here
 					choice = 0; // to stop the while loop
 					break;
 				}
@@ -75,7 +75,10 @@ public class MaxMinTester {
 			return;
 
 		MaxMinHeap heap = new MaxMinHeap(intArray); // congrats! we have a heap!
-		System.out.println("CONGRATS! YOU HAVE A MAX-MIN HEAP! To see the heap press 6 or 7\n");
+		if (heap.isEmpty()) {
+			System.out.println("No values were found in the input file. sorry , your heap is empty.\n");
+		} else
+			System.out.println("CONGRATS! YOU HAVE A MAX-MIN HEAP! To see the heap choose 6 or 7\n");
 
 		choice = 1; // to start next while loop
 
@@ -98,7 +101,7 @@ public class MaxMinTester {
 					System.out.println("\nWhat Integer would you like to Insert?\n");
 					reqIndex = Integer.parseInt(scanInput.nextLine()); // read user input
 					heap.heapInsert(reqIndex);
-					System.out.println("\nInsertion of "+reqIndex+" was successful!\n");
+					System.out.println("\nInsertion of " + reqIndex + " was successful!\n");
 					break;
 				}
 				case 3: {// extract max
@@ -128,8 +131,9 @@ public class MaxMinTester {
 						System.out.println("\nPlease insert the index of the value that you wish to remove?\n");
 						reqIndex = Integer.parseInt(scanInput.nextLine());
 						Integer delVal = heap.heapDelete(reqIndex);
-						if (delVal!=null)
-							System.out.println("\nDeletion of index "+reqIndex +" was successful! the extracted value was " +delVal);
+						if (delVal != null)
+							System.out.println("\nDeletion of index " + reqIndex
+									+ " was successful! the extracted value was " + delVal);
 						else
 							System.out.println("\nDeletion failed! the requested index is out of bound\n");
 					}

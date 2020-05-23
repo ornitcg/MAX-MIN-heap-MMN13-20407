@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * This class contains
+ * This class contains some helper methods for the MaxMinHeap class 
+ * and for the MaxMinTester class
  * 
  * @author (Ornit Cohen Gindi)
  * @version (2020b -20407)
@@ -17,9 +18,9 @@ public class IOUtils {
 	final public static int PAD2 = 3; // used for beautifying the display of the binary tree
 
 	/**
-	 * Displays the relevant menu.
+	 * Displays the relevant menu for each string received as parameter.
 	 * 
-	 * @param String Name of relevant menu. options :"start" for start menu, "heap"
+	 * @param String Name of relevant menu. options :"start" for start menu,"file" for input file menu and  "heap"
 	 *               for heap menu
 	 */
 	public static void menu(String type) {
@@ -27,12 +28,18 @@ public class IOUtils {
 			System.out.println("\nHello! press the following keys:");
 			System.out.println("1 To create a Max-Min heap");
 			System.out.println("0 To Quit");
+			System.out.println("-----------------------------------");
+			System.out.print("Your input: ");
 		}
 		if (type.equals("file")) {
 			System.out.println("\nWhich input do you wish to use? please press the key for the chosen action");
 			System.out.println("1 Default file from package: heap.txt");
 			System.out.println("2 Your own file");
 			System.out.println("0 To Quit");
+			System.out.println("-----------------------------------");
+			System.out.print("Your input: ");
+
+
 		}
 		if (type.equals("heap")) {
 			System.out.println("\n---------------What would you like to do next?-------------------");
@@ -45,13 +52,13 @@ public class IOUtils {
 			System.out.println("6 Display heap as binary tree");
 			System.out.println("7 Display heap as array");
 			System.out.println("0 Quit");
-			System.out.println("\n-----------------------------------------------------------------");
-		}
+			System.out.println("-----------------------------------");
+			System.out.print("Your input: ");		}
 	}//end menu
 	
 	
 	/**
-	 * Prints out a message about wrong input
+	 * Prints out a message about wrong user input
 	 */
 	public static void wrongKeyMessage() {
 		System.out.println("You pressed a key that was not on the list\nPlease try again\n");
@@ -61,7 +68,7 @@ public class IOUtils {
 	/**
 	 * Creates an array that contains all the integer values read from the file
 	 * 
-	 * @param path A full path including the filename ,given by the user
+	 * @param path a full path including the filename ,given by the user
 	 * @return An ArrayList type of array, containing all the integer values read
 	 *         from the file
 	 */
