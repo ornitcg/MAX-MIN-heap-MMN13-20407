@@ -1,5 +1,6 @@
 package heap;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Scanner;
  * @version (2020b -20407)
  */
 public class MaxMinTester {
+	final static  String DEFAULT_PATH = "testFiles/heap.txt";
 	public static void main(String[] args) {
 		Scanner scanInput = new Scanner(System.in);
 		int reqIndex;
@@ -35,7 +37,7 @@ public class MaxMinTester {
 		} // end while
 
 		IOUtils.menu("file");
-		Path path = Paths.get("testFiles/heap.txt"); // set default path
+		Path path = Paths.get(DEFAULT_PATH); // set default path
 		while (choice != 0) {
 			try {
 				choice = Integer.parseInt(scanInput.nextLine()); // read user input
@@ -43,6 +45,7 @@ public class MaxMinTester {
 				switch (choice) {
 				case 1: {// sort using heap
 					System.out.println("\nOK! Loading heap.txt"); // default path is used here
+					path = Paths.get(DEFAULT_PATH); // read user input
 					choice = 0; // to stop the while loop
 					break;
 				}
@@ -68,11 +71,19 @@ public class MaxMinTester {
 				IOUtils.wrongKeyMessage(); // output message
 				IOUtils.menu("file"); // try again
 			} // end try-catch
+			
+			try {
+				intArray = IOUtils.readFile(path); // load array from path
+			}
+			catch (FileNotFoundException e){
+				IOUtils.menu("file"); // try again
+				choice = 1; // to make while loop continue
+			}
 		} // end while
-
-		intArray = IOUtils.readFile(path); // load array from path
-		if (intArray == null) // loading failed, exit program
-			return;
+		
+		
+//		if (intArray == null) // loading failed, exit program
+//			return;
 
 		MaxMinHeap heap = new MaxMinHeap(intArray); // congrats! we have a heap!
 		if (heap.isEmpty()) {

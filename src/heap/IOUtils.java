@@ -1,6 +1,7 @@
 package heap;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -71,8 +72,10 @@ public class IOUtils {
 	 * @param path a full path including the filename ,given by the user
 	 * @return An ArrayList type of array, containing all the integer values read
 	 *         from the file
+	 * @throws FileNotFoundException 
 	 */
-	public static ArrayList<Integer> readFile(Path path) {
+	public static ArrayList<Integer> readFile(Path path) throws FileNotFoundException  
+	{
 		ArrayList<Integer> intArray = new ArrayList<Integer>();
 		File file;
 		try {
@@ -87,9 +90,10 @@ public class IOUtils {
 				}
 			}
 			scanFile.close();
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
 			System.out.println("There is a problem with opening the file   " + e);
 			intArray = null;
+			throw e;
 		}
 		return intArray;
 	}//end readFile

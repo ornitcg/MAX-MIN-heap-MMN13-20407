@@ -49,33 +49,29 @@ public class MaxMinHeap {
 	 * constructor.
 	 */
 	private void buildHeap() {
-		// loop on all MIN (odd) levels from top down, and heapifying all 'nodes' of the
-		// tree
-		for (int node = 0; node < _heapSize; node++)
-			if (indexDepth(node) % 2 == 1) {// all the MIN first
-				// System.out.println("BuildHeap on node#" + node + "\n");// debug
-				heapify(node, 1);
-			}
-
-		// loop on all MAx (even) levels from bottom to top
-		for (int node = _heapSize - 1; node >= 0; node--)
-			if (indexDepth(node) % 2 == 0) { // all the MAX second
-				// System.out.println("BuildHeap on node#" + node + "\n");// debug
-				heapify(node, 1);
-			}
-
+		// loop on all MAX (even) levels from bottom to top
+		int depth;
+		for (int node = parent(_heapSize - 1); node >= 0; node--) {
+			// System.out.println("BuildHeap on node#" + node + "\n");// debug
+			depth = indexDepth(node);
+			heapify(node, 1, depth);
+		}
 	}// end buildHeap
+
 
 	/**
 	 * Corrects the Max-Min heap for a specific index.
 	 * 
-	 * @param current index of node in the array representing the binary tree heap
-	 * @param build   is assigned 1 when calling heapify from buildHeap, and 0
+	 * @param current Index of node in the array representing the binary tree heap
+	 * @param build   Is assigned 1 when calling heapify from buildHeap, and 0
 	 *                otherwise
+	 * @param depth The depth of the node , heapify was called with, by buildHeap.
+	 * when called from other methods, this parameter has no meaning.
 	 **/
-	private void heapify(int current, int mode) {
-		// System.out.println("heapify : node# " + ind + "\n" + this); // debug
-		int depth = indexDepth(current);
+	private void heapify(int current, int mode, int depth) {
+		int curdepth = indexDepth(current);
+		//System.out.println("heapify : node# " + current + " current depth :" + curdepth + "\n" + this); // debug
+
 		int maxChild = childInd(current, 1); // 1 for finding max. saving index of the maximum of an index's children
 		int minChild = childInd(current, 0); // 0 for finding min. saving index of the maximum of an index's children
 		int maxGrandchild = grandchildInd(current, 1); // 1 for finding max. saving index of maximum of an index's
@@ -86,54 +82,59 @@ public class MaxMinHeap {
 		Integer currentVal = get(current);
 		Integer parent = get(parent(current));
 
-		if (depth % 2 == 0) { // if depth level is even(max)
+		//this condition is only when called from buildHeap, to prevent heapify from
+		//exceeding this height of the tree
+		if (mode == 1 && curdepth < depth) 
+			return;
+		
+
+		if (curdepth % 2 == 0) { // if depth level is even(max)
 
 			if (hasGrandchild(current) && maxGrandchild != current) {
-//				 System.out.println("current " + current + " < maxGrandchild " + get(maxGrandchild)); // debug
+//				System.out.println("current " + currentVal + " < maxGrandchild " + get(maxGrandchild)); // debug
 				swap(_heap, current, maxGrandchild);
-				heapify(maxGrandchild, mode);
+				heapify(maxGrandchild, mode, depth);
 			} else if (hasChild(current) && currentVal < get(maxChild)) {
-//				 System.out.println("current " + current + " < maxChild " + get(maxChild)); //debug
+//				System.out.println("current " + currentVal + " < maxChild " + get(maxChild)); // debug
 				swap(_heap, current, maxChild);
-				heapify(maxChild, mode);
+				heapify(maxChild, mode, depth);
 			} else if (!hasChild(current) && parent != null && currentVal < parent) {
-				// comment : case ind is at the bottom of the tree
-//				 System.out.println("current " + current + " < parent " + parent); // debug
+				// comment : case current is at the bottom of the tree
+//				System.out.println("current " + currentVal + " < parent " + parent); // debug
 				swap(_heap, current, parent(current));
-				heapify(parent(current), mode);
+				heapify(parent(current), mode, depth);
 			} else if (mode != 1 && grandparent != -1 && currentVal > get(grandparent)) {
 				// comment:correction towards MAX node
-//				 System.out.println("current " + current + " > grandparent " +
-//				 get(grandparent)); // debug
+//				System.out.println("current " + currentVal + " > grandparent " + get(grandparent)); // debug
 				swap(_heap, current, grandparent);
-				heapify(grandparent, mode);
+				heapify(grandparent, mode, depth);
 			}
-
 		} // end if MAX
 		else // if depth level is odd(min)
 		{
 			if (grandparent > -1 && currentVal < get(grandparent)) { // case of no grandparent
-//				 System.out.println("current " + currentVal + " < grandparent " + get(grandparent)); // debug
+//				System.out.println("current " + currentVal + " < grandparent " + get(grandparent)); // debug
 				swap(_heap, current, grandparent);
-				heapify(grandparent, mode);
+				heapify(grandparent, mode, depth);
 			} else if (mode != 1) { // mode is not 'build'
 				if (hasGrandchild(current) && currentVal > get(minGrandchild)) {
 //					System.out.println("current " + currentVal + " > minGrandchild " + get(minGrandchild)); // debug
 					swap(_heap, current, minGrandchild);
-					heapify(minGrandchild, mode);
+					heapify(minGrandchild, mode, depth);
 				} else if (hasChild(current) && currentVal > get(minChild)) {
-//					 System.out.println("current " + currentVal + " > minChild " + get(minChild));// debug
+//					System.out.println("current " + currentVal + " > minChild " + get(minChild));// debug
 					swap(_heap, current, minChild);
-					heapify(minChild, mode);
+					heapify(minChild, mode, depth);
 				} else if (!hasGrandchild(current) && !hasChild(current) && parent != null && currentVal > parent) {
-//					 System.out.println("current " + currentVal + " > parent " + parent); // debug
+//					System.out.println("current " + currentVal + " > parent " + parent); // debug
 					swap(_heap, current, parent(current));
-//					 System.out.println("swap " +current+ " with "+ parent); //debug
-					heapify(parent(current), mode);
+					System.out.println("swap " + current + " with " + parent); // debug
+					heapify(parent(current), mode, depth);
 				}
 			} // end
 		} // end if MIN
 	}
+
 
 	/**
 	 * Removes the node of the maximum value from heap
@@ -149,7 +150,7 @@ public class MaxMinHeap {
 		removeLastNode();
 		updateHeapSize();
 		if (_heapSize > 1)
-			heapify(0, 0);
+			heapify(0, 0, 0);
 		// mode=0 for it's not for buildHeap, heapify because now the max position
 		// has the last value and it may interrupt the heap rules
 		return max;
@@ -172,7 +173,7 @@ public class MaxMinHeap {
 		removeLastNode();
 		updateHeapSize();
 		if (_heapSize > 3)
-			heapify(heapMinInd, 0); // mode=0 for it's not for buildHeap
+			heapify(heapMinInd, 0, 0); // mode=0 for it's not for buildHeap
 		// be corrected
 		return heapMinVal;
 	}
@@ -191,7 +192,7 @@ public class MaxMinHeap {
 		_heap.set(index, last); // mark the wanted to be removed index
 		removeLastNode();
 		updateHeapSize();
-		heapify(index, 0); // mode=0 for it's not for buildHeap
+		heapify(index, 0, 0); // mode=0 for it's not for buildHeap
 		return indexVal;
 	}
 
@@ -208,7 +209,7 @@ public class MaxMinHeap {
 		}
 		_heap.add(_heapSize, key); // place the max value kept aside, at the end of the array
 		updateHeapSize();
-		heapify(_heapSize - 1, 0); // mode=0 for it's not for buildHeap
+		heapify(_heapSize - 1, 0, 0); // mode=0, depth =0 for it's not for buildHeap
 	}
 
 	/**
@@ -366,7 +367,7 @@ public class MaxMinHeap {
 	}
 
 	/**
-	 * Calculates the index of the left son of the given index ind. 
+	 * Calculates the index of the left son of the given index current.
 	 * 
 	 * @param current The index to calculate for
 	 * @return The index of ind's left son
@@ -376,7 +377,7 @@ public class MaxMinHeap {
 	}
 
 	/**
-	 * Calculates the index of the right son of the given index ind.
+	 * Calculates the index of the right son of the given index current.
 	 * 
 	 * @param current The index to calculate for
 	 * @return The index of ind's right son
@@ -386,7 +387,7 @@ public class MaxMinHeap {
 	}
 
 	/**
-	 * Calculates if a value in the heap binary tree, has any children. 
+	 * Calculates if a value in the heap binary tree, has any children.
 	 * 
 	 * @param current an index at the array that represents the binary tree
 	 * @return true If the value has at least one child
@@ -399,7 +400,7 @@ public class MaxMinHeap {
 	 * Calculates the max value between a given index and its two sons (or son).
 	 * 
 	 * @param current index to calculate for
-	 * @return index of the maximum value between ind and its sons
+	 * @return index of the maximum value between current and its sons
 	 */
 	private int childInd(int current, int mode) {
 		int left = leftSon(current); // left already considers the 0
@@ -440,12 +441,12 @@ public class MaxMinHeap {
 
 	/**
 	 * Calculates the max or min value between a given index and its four possible
-	 * grandchildren (or less). 
+	 * grandchildren (or less).
 	 * 
 	 * @param current index to calculate for
-	 * @param mode - accepts 1 to calculate max grandchild and, and 0 to calculate min
-	 *                grandchild
-	 * @return index of the maximum or minimum value between ind and its
+	 * @param mode    - accepts 1 to calculate max grandchild and, and 0 to
+	 *                calculate min grandchild
+	 * @return index of the maximum or minimum value between current and its
 	 *         grandchildren
 	 */
 	private int grandchildInd(int current, int mode) {
