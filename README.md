@@ -1,5 +1,5 @@
 # MAX-MIN-heap-MMN13-20407
-MAX-MIN heap project
+
 *.java files are in src/heap
 
 This challenge was given as an assignment in Intro to data structures and algorithms course
