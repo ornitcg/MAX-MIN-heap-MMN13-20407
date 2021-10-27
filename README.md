@@ -1,8 +1,8 @@
-# MAX-MIN-heap-MMN13-20407
+# MAX-MIN-heap
 
-*.java files are in src/heap
+*.java file are in src/heap
 
-This challenge was given as an assignment in Intro to data structures and algorithms course
+This challenge was given as an assignment in Intro to data structures and algorithms course (20407)
 a MAX-MIN heam is a heap (full or almost full binary tree) in which:
       every value in an even layer is larger than or equals to any value in other nodes that are beneath it
       every value in an odd layer is smaller than or equals to any value in other nodes that are beneath it
